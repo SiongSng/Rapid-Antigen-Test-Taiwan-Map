@@ -47,15 +47,15 @@ async function startFetch() {
 
 function commitToGithub() {
     console.log("Committing to github...");
-    childProcess.execSync("CLONE_DIR=$(mktemp -d)");
+    const cloneDir = childProcess.execSync("mktemp -d", { encoding: "utf8" });
 
     childProcess.execSync("git config --global user.email github-actions[bot]@github.com");
     childProcess.execSync("git config --global user.name \"GitHub Actions Bot\"");
 
     console.log("Cloning repository...");
-    childProcess.execSync("git clone --single-branch --branch data \"https://x-access-token:$API_TOKEN_GITHUB@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"$CLONE_DIR\"");
+    childProcess.execSync(`git clone --single-branch --branch data \"https://x-access-token:$API_TOKEN_GITHUB@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`);
 
-    childProcess.execSync("cp -R data $CLONE_DIR");
+    childProcess.execSync(`cp -R data ${cloneDir}`);
 
     childProcess.execSync("git add .");
     childProcess.execSync("git commit --message \"Auto update data\"");
