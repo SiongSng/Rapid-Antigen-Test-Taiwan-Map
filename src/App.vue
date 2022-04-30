@@ -10,6 +10,7 @@ import { AxiosResponse } from "axios";
 import { Options, Vue } from "vue-class-component";
 
 import Leaflet from "leaflet";
+import "leaflet.locatecontrol";
 import { Feature, Point } from "geojson";
 let openStreetMap: Leaflet.Map;
 
@@ -69,27 +70,33 @@ let openStreetMap: Leaflet.Map;
   },
   mounted() {
     let zoom = 16;
-    let maxZoom = 19;
+
+    const title = Leaflet.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution:
+          'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      }
+    );
 
     openStreetMap = Leaflet.map("map", {
       center: [25.042474, 121.513729],
-      zoom: zoom,
+      layers: [title],
+      zoom: zoom
     });
-    openStreetMap.locate({
-      setView: true,
-      maxZoom: zoom,
-    });
+    Leaflet.control
+      .locate({
+        position: "topleft",
+        initialZoomLevel: zoom,
+        strings: { title: "定位到目前位置", popup: "目前位置" },
+      })
+      .addTo(openStreetMap)
+      .start();
 
-    Leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      maxZoom: maxZoom,
-    }).addTo(openStreetMap);
-
-    const pharmacyAPIUrl =
+    const antigenAPIUrl =
       "https://raw.githubusercontent.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map/data/data/antigen_open_street_map.json";
-    this.$http.get(pharmacyAPIUrl).then((response: AxiosResponse) => {
-      /// save pharmacy data
+    this.$http.get(antigenAPIUrl).then((response: AxiosResponse) => {
+      /// save antigen data
       this.data = response.data.features;
     });
   },
