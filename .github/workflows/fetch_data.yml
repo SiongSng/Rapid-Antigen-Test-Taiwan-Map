@@ -29,14 +29,3 @@ jobs:
         run: |
           cd script
           yarn run run
-      # - name: Upload to data branch
-      #   uses: dmnemec/copy_file_to_another_repo_action@main
-      #   env:
-      #     API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      #   with:
-      #     source_file: "script/data/"
-      #     destination_repo: "SiongSng/Rapid-Antigen-Test-Taiwan-Map"
-      #     destination_branch: "data"
-      #     user_email: "github-actions[bot]@github.com"
-      #     user_name: "GitHub Actions Bot"
-      #     commit_message: "Auto update data"
