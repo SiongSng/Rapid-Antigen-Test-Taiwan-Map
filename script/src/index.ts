@@ -11,7 +11,7 @@ async function start() {
     await _start();
 
     async function _start() {
-        await startFetch();
+       // await startFetch();
         commitToGithub();
         console.log("Finished");
     }
@@ -50,7 +50,7 @@ function commitToGithub() {
     childProcess.execSync("CLONE_DIR=$(mktemp -d)");
 
     childProcess.execSync("git config --global user.email github-actions[bot]@github.com");
-    childProcess.execSync("git config --global user.name GitHub Actions Bot");
+    childProcess.execSync("git config --global user.name \"GitHub Actions Bot\"");
 
     console.log("Cloning repository...");
     childProcess.execSync("git clone --single-branch --branch data \"https://x-access-token:$API_TOKEN_GITHUB@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"$CLONE_DIR\"");
