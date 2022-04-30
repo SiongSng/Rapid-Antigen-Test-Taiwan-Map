@@ -58,10 +58,10 @@ export interface antigenFileType {
 }
 
 // ----- 全民健康保險特約院所固定服務時段 -----
-/**
+/**全民健康保險特約院所固定服務時段 type dict
  * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=441&Mid=A111088
  */
-export interface test {
+export interface pharmacyUptimeType {
   /**醫事機構代碼 */
   醫事機構代碼: string;
   /**醫事機構名稱 */
@@ -107,4 +107,35 @@ export interface test {
   開業狀況: string;
   /**資料集更新時間 */
   資料集更新時間: string;
+}
+
+/**全民健康保險特約院所固定服務時段 type list
+ * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=441&Mid=A111088
+ */
+export type pharmacyUptimeTypeList = pharmacyUptimeType[];
+
+/**全民健康保險特約院所固定服務時段 api type
+ * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=441&Mid=A111088
+ */
+export interface pharmacyUptimeFileType {
+  [code: string]: {
+    /**醫事機構代碼 */
+    code: number;
+    /**醫事機構名稱 */
+    name: string;
+    /**業務組別 */
+    service_group: number;
+    /**特約類別 */
+    special_category: number;
+    /**看診年度 */
+    see_doctor_year: number;
+    /**看診星期 */
+    see_doctor_week: string;
+    /**看診備註 */
+    note: string | null;
+    /**開業狀況 */
+    open_status: number;
+    /**資料集更新時間 */
+    updated_at: number;
+  };
 }
