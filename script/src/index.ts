@@ -11,7 +11,7 @@ async function start() {
     await _start();
 
     async function _start() {
-        await startFetch();
+        //await startFetch();
         commitToGithub();
         console.log("Finished");
     }
@@ -57,14 +57,12 @@ function commitToGithub() {
 
     childProcess.execSync(`cp -R data ${cloneDir}`);
 
-    const cdCommand = `cd ${cloneDir} &&`;
-
-    const needsCommit: boolean = childProcess.execSync(`${cdCommand} git status --porcelain`, { encoding: "utf8" }).length > 0;
+    const needsCommit: boolean = childProcess.execSync(`git status --porcelain`, { encoding: "utf8", cwd: cloneDir }).length > 0;
 
     if (needsCommit) {
-        childProcess.execSync(`${cdCommand} git add .`);
-        childProcess.execSync(`${cdCommand} git commit --message \"Auto update data\"`);
-        childProcess.execSync(`${cdCommand} git push -u origin HEAD:data`);
+        childProcess.execSync(`git add .`, { cwd: cloneDir });
+        childProcess.execSync(`git commit --message \"Auto update data\"`, { cwd: cloneDir });
+        childProcess.execSync(`git push -u origin HEAD:data`, { cwd: cloneDir });
         console.log("Pushed successfully");
     }
 
