@@ -27,7 +27,7 @@ async function start() {
   if (runOnGithubAction) {
     // runs every minute
     interval = setInterval(async () => {
-      if (times >= 60) {
+      if (times >= 58) {
         clearInterval(interval);
         exit(0);
       }
