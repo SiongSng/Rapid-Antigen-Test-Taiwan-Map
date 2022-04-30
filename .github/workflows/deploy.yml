@@ -15,7 +15,7 @@ jobs:
         with:
           username: "SiongSng"
           reponame: "Rapid-Antigen-Test-Taiwan-Map"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.API_TOKEN_GITHUB }}
           gitmsg: Deploy to github pages
           gitname: Github action bot
           useyarn: true
