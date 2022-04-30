@@ -8,17 +8,23 @@ import * as childProcess from "node:child_process";
 
 async function start() {
     let times = 0;
+    await _start();
+
+    async function _start() {
+        await startFetch();
+        commitToGithub();
+        console.log("Finished");
+    }
 
     // runs every minute
     setInterval((async () => {
-        if (times >= 15) {
+        if (times >= 14) {
             clearInterval();
             return;
         }
 
         times++;
-        await startFetch();
-        git();
+        await _start();
     }), 1000 * 60 * 60);
 }
 
@@ -36,11 +42,11 @@ async function startFetch() {
     console.log("Converting to OpenStreetMap format...");
     writeJson("antigen_open_street_map", openStreetMap(antigen));
 
-    console.log("Finished");
+    console.log("Fetched successfully");
 }
 
-function git() {
-    console.log("Git commit...");
+function commitToGithub() {
+    console.log("Committing to github...");
     childProcess.execSync("CLONE_DIR=$(mktemp -d)");
 
     childProcess.execSync("git config --global user.email github-actions[bot]@github.com");
@@ -54,7 +60,7 @@ function git() {
     childProcess.execSync("git add .");
     childProcess.execSync("git commit --message \"Auto update data\"");
     childProcess.execSync("git push -u origin HEAD:data");
-    console.log("Git committed");
+    console.log("Committed successfully");
 }
 
 function writeJson(filename: string, data: unknown) {
