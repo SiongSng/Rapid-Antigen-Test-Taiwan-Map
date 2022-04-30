@@ -35,7 +35,7 @@ export type fetchAntigenTypeList = fetchAntigenType[];
  */
 export interface antigenFileType {
   [code: string]: {
-    code: string;
+    code: number;
     /**醫事機構名稱 */
     name: string;
     /**醫事機構地址 */
@@ -150,3 +150,72 @@ export type pharmacyUptimeFileParseSeeDoctorWeekType = Record<
   | "sunday",
   Record<"morning" | "afternoon", boolean>
 >;
+// ----- 健保特約醫事機構-藥局 -----
+/**健保特約醫事機構-藥局 type dict
+ * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=441&Mid=A111088
+ */
+export interface pharmacyType {
+  /**醫事機構代碼 */
+  醫事機構代碼: string;
+  /**醫事機構名稱 */
+  醫事機構名稱: string;
+  /**醫事機構種類 */
+  醫事機構種類: string;
+  /**電話 */
+  電話: string;
+  /**地址 */
+  地址: string;
+  /**分區業務組 */
+  分區業務組: string;
+  /**特約類別 */
+  特約類別: string;
+  /**服務項目 */
+  服務項目: string;
+  /**診療科別 */
+  診療科別: string;
+  /**終止合約或歇業日期 */
+  終止合約或歇業日期: string;
+  /**固定看診時段 */
+  固定看診時段: string;
+  /**備註 */
+  備註: string;
+  /**縣市別代碼 */
+  縣市別代碼: string;
+}
+/**健保特約醫事機構-藥局 type list
+ * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=441&Mid=A111088
+ */
+export type pharmacyTypeList = pharmacyType[];
+/**健保特約醫事機構-藥局 api type
+ * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=441&Mid=A111088
+ */
+export interface pharmacyFileType {
+  [code: string]: {
+    /**醫事機構代碼 */
+    code: number;
+    /**醫事機構名稱 */
+    name: string;
+    /**醫事機構種類 */
+    type: string;
+    /**電話 */
+    phone: string;
+    /**地址 */
+    address: string;
+    /**分區業務組 */
+    regional_service_group: string;
+    /**特約類別 */
+    special_category: string;
+    /**服務項目 */
+    service_items: string | null;
+    /**診療科別 */
+    departments: string | null;
+    /**終止合約或歇業日 */
+    termination_or_close_date: string | null;
+    /**固定看診時段 */
+    time: string;
+    /**備註 */
+    note: string | null;
+    /**縣市別代碼 */
+    city_code: number;
+  };
+}

@@ -3,6 +3,7 @@ import csv from "csvtojson";
 import {
   pharmacyUptimeFileParseSeeDoctorWeekType,
   pharmacyUptimeFileType,
+  pharmacyUptimeTypeList,
 } from "../../types/axios";
 import { parseNote } from "../util";
 
@@ -16,12 +17,13 @@ export const fetchPharmacyUptime = async () => {
 
   if (!data) return;
 
-  const jsonData = await csv().fromString(data);
+  const jsonData: pharmacyUptimeTypeList = await csv().fromString(data);
   let newData: pharmacyUptimeFileType = {};
 
   jsonData.forEach((element) => {
-    newData[element["醫事機構代碼"]] = {
-      code: parseInt(element["醫事機構代碼"]),
+    const code: string = element["醫事機構代碼"];
+    newData[code] = {
+      code: parseInt(code),
       name: element["醫事機構名稱"],
       service_group: parseInt(element["業務組別"]),
       special_category: parseInt(element["特約類別"]),

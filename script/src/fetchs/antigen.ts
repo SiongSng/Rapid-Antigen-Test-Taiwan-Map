@@ -20,8 +20,9 @@ export const fetchAntigen = async (
   let newJsonData: antigenFileType = {};
 
   jsonArray.forEach((data) => {
-    newJsonData[data["醫事機構代碼"]] = {
-      code: data["醫事機構名稱"],
+    const code: string = data["醫事機構代碼"];
+    newJsonData[code] = {
+      code: parseInt(code),
       name: data["醫事機構名稱"],
       address: data["醫事機構地址"],
       longitude: parseFloat(data["經度"]),
