@@ -18,21 +18,24 @@ async function start() {
 
   async function _start() {
     await startFetch();
-    if (runOnGithubAction) commitToGithub();
+    try {
+      if (runOnGithubAction) pushChangesToGithub();
+    } catch (error) {
+      console.error("Failed to push changes to github.", error);
+    }
     console.log("Finished");
   }
 
   if (runOnGithubAction) {
     // runs every minute
-    interval = setInterval(async () => {
-      if (times >= 58) {
+    interval = setInterval(() => {
+      if (times >= 57) {
         clearInterval(interval);
         exit(0);
       }
       times++;
 
-      await _start();
-      console.log("Waiting for next fetch...");
+      _start().then(() => console.log("Waiting for next fetch..."));
     }, 1000 * 60);
   }
 }
@@ -55,7 +58,7 @@ async function startFetch() {
   console.log("Fetched successfully");
 }
 
-function commitToGithub() {
+function pushChangesToGithub() {
   console.log("Committing to github...");
   const cloneDir = ".data-branch-clone";
 
