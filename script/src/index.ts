@@ -23,19 +23,21 @@ async function start() {
       commitToGithub();
     }
     console.log("Finished");
-    console.log("Waiting for next fetch...");
   }
 
-  // runs every minute
-  setInterval(async () => {
-    if (times >= 59) {
-      clearInterval();
-      exit(0);
-    }
+  if (runOnGithubAction) {
+    // runs every minute
+    setInterval(async () => {
+      if (times >= 59) {
+        clearInterval();
+        exit(0);
+      }
 
-    times++;
-    await _start();
-  }, 1000 * 60);
+      times++;
+      await _start();
+      console.log("Waiting for next fetch...");
+    }, 1000 * 60);
+  }
 }
 
 async function startFetch() {
@@ -88,7 +90,7 @@ function commitToGithub() {
   }
 
   console.log("Committed successfully");
-  fs.rmdirSync(cloneDir, { recursive: true });
+  fs.rmSync(cloneDir, { recursive: true });
 }
 
 async function getOldAntigen(): Promise<antigenFileType | null> {
