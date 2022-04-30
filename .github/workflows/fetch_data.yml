@@ -19,7 +19,8 @@ jobs:
         uses: actions/setup-node@v3
       - name: Setup
         run: |
-          apt-get install -y rsync
+          sudo apt-get update
+          sudo apt-get install -y rsync
           corepack enable
           yarn global add typescript
           cd script
