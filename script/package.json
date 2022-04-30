@@ -1,0 +1,19 @@
+{
+  "name": "script",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "run": "npm run build && node out/index.js"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^0.27.2",
+    "csvtojson": "^2.0.10",
+    "node-fs": "^0.1.7"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.4"
+  }
+}

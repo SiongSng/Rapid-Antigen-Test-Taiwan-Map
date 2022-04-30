@@ -1,0 +1,35 @@
+name: Fetch data (every 5 minutes)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run every 5 minutes
+    - cron: "*/5 * * * *"
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup
+        uses: actions/setup-node@v3
+        run: |
+          corepack enable
+          yarn global add typescript
+          cd script
+          yarn install
+      - name: Run fetch script
+        run: |
+          cd script
+          yarn run run
+      - name: Upload to `data` branch
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ github.token }}
+        with:
+          source_file: "script/data"
+          destination_repo: "https://github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map"
+          destination_branch: "data"
+          user_email: "rrt467778@gmail.com"
+          user_name: "SiongSng"
+          commit_message: "Update data"

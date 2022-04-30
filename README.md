@@ -1,5 +1,5 @@
 # Rapid-Antigen-Test-Taiwan-Map
-台灣抗原家用快篩地圖
+台灣抗原家用快篩藥局販售地圖
 
 ## Project setup
 ```
