@@ -4,10 +4,8 @@ import {
   antigenFileType,
   fetchAntigenTypeList,
   pharmacyUptimeFileType,
-  pharmacyUptimeType,
-  pharmacyUptimeTypeList,
 } from "../../types/axios";
-import { DataJsonType, parseNote } from "../util";
+import { parseNote } from "../util";
 
 /**
  * 健保特約機構防疫家用快篩剩餘數量明細
@@ -28,7 +26,7 @@ export const fetchAntigen = async (
 
   jsonData.forEach((data) => {
     const code: number = parseInt(data["醫事機構代碼"]);
-    const uptime = pharmacyUptime[code];
+    const uptime = pharmacyUptime[code.toString()];
 
     newJsonData[code.toString()] = {
       code: code,
