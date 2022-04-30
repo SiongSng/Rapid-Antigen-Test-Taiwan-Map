@@ -3,7 +3,7 @@ name: Fetch data
 on:
   workflow_dispatch:
   schedule:
-    # Run every 5 minutes
+    # Runs every 5 minutes
     - cron: "*/5 * * * *"
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ github.token }}
         with:
           source_file: "script/data"
-          destination_repo: "https://github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map"
+          destination_repo: "SiongSng/Rapid-Antigen-Test-Taiwan-Map"
           destination_branch: "data"
           user_email: "rrt467778@gmail.com"
           user_name: "SiongSng"
