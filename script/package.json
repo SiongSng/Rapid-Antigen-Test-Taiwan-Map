@@ -1,12 +1,12 @@
 {
   "name": "script",
-  "main": "index.ts",
+  "main": "scr/index.ts",
   "version": "1.0.0",
   "license": "GPL-3.0",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "run": "npm run build && node out/index.js"
+    "run": "npm run build && node out/src/index.js"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
