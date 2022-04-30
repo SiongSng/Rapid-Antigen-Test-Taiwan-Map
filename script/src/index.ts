@@ -56,10 +56,16 @@ function commitToGithub() {
     childProcess.execSync(`git clone --single-branch --branch data \"https://x-access-token:$API_TOKEN_GITHUB@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`);
 
     childProcess.execSync(`cp -R data ${cloneDir}`);
+    childProcess.execSync(`cd ${cloneDir}`);
 
-    childProcess.execSync("git add .");
-    childProcess.execSync("git commit --message \"Auto update data\"");
-    childProcess.execSync("git push -u origin HEAD:data");
+    const needsCommit: boolean = childProcess.execSync(`git status --porcelain`, { encoding: "utf8" }).length > 0;
+
+    if (needsCommit) {
+        childProcess.execSync("git add .");
+        childProcess.execSync("git commit --message \"Auto update data\"");
+        childProcess.execSync("git push -u origin HEAD:data");
+    }
+
     console.log("Committed successfully");
 }
 
