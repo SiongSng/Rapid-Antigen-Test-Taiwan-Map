@@ -79,7 +79,11 @@ function commitToGithub() {
 
 async function getOldAntigen(): Promise<JsonArrayType | null> {
     if (runOnGithubAction) {
-        return await (await axios.get("https://raw.githubusercontent.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map/data/data/antigen.json")).data
+        try {
+            return await (await axios.get("https://raw.githubusercontent.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map/data/data/antigen.json")).data;
+        } catch (error) {
+            return null;
+        }
     } else {
         return readJson("antigen");
     }
