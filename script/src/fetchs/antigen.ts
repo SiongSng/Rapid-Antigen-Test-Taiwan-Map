@@ -22,7 +22,7 @@ export const fetchAntigen = async (
   if (!data) return;
 
   const jsonData: fetchAntigenTypeList = await csv().fromString(data);
-  let newJsonData: antigenFileType = {};
+  const newJsonData: antigenFileType = {};
 
   jsonData.forEach((data) => {
     const code: number = parseInt(data["醫事機構代碼"]);

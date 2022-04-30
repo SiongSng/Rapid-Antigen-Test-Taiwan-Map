@@ -18,7 +18,7 @@ const fetchPharmacy = async (): Promise<DataJsonType | undefined> => {
   if (!data) return;
 
   const jsonArray: pharmacyTypeList = await csv().fromString(data);
-  let newData: pharmacyFileType = {};
+  const newData: pharmacyFileType = {};
 
   jsonArray.forEach((data) => {
     const code = data["醫事機構代碼"];

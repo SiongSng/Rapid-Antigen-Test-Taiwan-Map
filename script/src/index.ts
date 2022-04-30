@@ -68,7 +68,7 @@ function commitToGithub() {
 
   console.log("Cloning repository...");
   childProcess.execSync(
-    `git clone --single-branch --branch data \"https://x-access-token:${githubAPIToken}@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`
+    `git clone --single-branch --branch data "https://x-access-token:${githubAPIToken}@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git" "${cloneDir}"`
   );
 
   childProcess.execSync(`cp -R data ${cloneDir}`);
@@ -81,7 +81,7 @@ function commitToGithub() {
 
   if (needsCommit) {
     childProcess.execSync(`git add .`, { cwd: cloneDir });
-    childProcess.execSync(`git commit --message \"Auto update data\"`, {
+    childProcess.execSync(`git commit --message "Auto update data"`, {
       cwd: cloneDir,
     });
     childProcess.execSync(`git push -u origin HEAD:data`, { cwd: cloneDir });
