@@ -7,6 +7,14 @@
       "problemMatcher": ["$tsc"],
       "group": "build",
       "label": "tsc: build - script/tsconfig.json"
+    },
+    {
+      "type": "npm",
+      "script": "serve",
+      "problemMatcher": [],
+      "label": "npm: serve",
+      "isBackground": true,
+      "detail": "vue-cli-service serve"
     }
   ]
 }

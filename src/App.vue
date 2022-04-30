@@ -51,7 +51,7 @@ let openStreetMap: Leaflet.Map;
             pharmacy.properties.name
           }</strong></p>
            <strong style="font-size: 16px;">品牌: ${
-             pharmacy.properties.brand
+             pharmacy.properties.brands[0]
            }</br>
           <strong style="font-size: 16px;">剩餘 ${
             pharmacy.properties.count
@@ -62,7 +62,7 @@ let openStreetMap: Leaflet.Map;
           地址: ${pharmacy.properties.address}<br>
           電話: ${pharmacy.properties.phone}<br>
           備註: ${pharmacy.properties.note}<br>
-          <small>最後更新時間: ${pharmacy.properties.updated}</small>`);
+          <small>最後更新時間: ${pharmacy.properties.updated_at}</small>`);
         }
       );
     },
@@ -87,7 +87,7 @@ let openStreetMap: Leaflet.Map;
     }).addTo(openStreetMap);
 
     const pharmacyAPIUrl =
-      "https://raw.githubusercontent.com/kiang/data.nhi.gov.tw/master/docs/antigen.json";
+      "https://raw.githubusercontent.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map/data/data/antigen_open_street_map.json";
     this.$http.get(pharmacyAPIUrl).then((response: AxiosResponse) => {
       /// save pharmacy data
       this.data = response.data.features;
