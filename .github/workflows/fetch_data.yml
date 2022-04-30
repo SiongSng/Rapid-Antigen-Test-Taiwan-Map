@@ -24,11 +24,10 @@ jobs:
           cd script
           yarn install
       - name: Run fetch script
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         run: |
           cd script
-          yarn run run
+          yarn run build
+          node out/index.js ${{ secrets.API_TOKEN_GITHUB }}
       # - name: Upload to data branch
       #   uses: dmnemec/copy_file_to_another_repo_action@main
       #   env:

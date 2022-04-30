@@ -46,6 +46,12 @@ async function startFetch() {
 }
 
 function commitToGithub() {
+    const githubAPIToken = process.argv[0];
+
+    if (githubAPIToken == undefined || githubAPIToken == "" || githubAPIToken == null) {
+        return;
+    }
+
     console.log("Committing to github...");
     const cloneDir = childProcess.execSync("mktemp -d", { encoding: "utf8" });
 
@@ -53,7 +59,6 @@ function commitToGithub() {
     childProcess.execSync("git config --global user.name \"GitHub Actions Bot\"");
 
     console.log("Cloning repository...");
-    const githubAPIToken = process.env["API_TOKEN_GITHUB"];
     childProcess.execSync(`git clone --single-branch --branch data \"https://x-access-token:${githubAPIToken}@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`);
 
     childProcess.execSync(`ls`, { cwd: cloneDir });
