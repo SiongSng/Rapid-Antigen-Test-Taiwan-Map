@@ -9,7 +9,7 @@ import fetchAntigen from "./fetchs/antigen";
 import openStreetMap from "./map/open_street_map";
 import { antigenFileType } from "../types/axios";
 
-const githubAPIToken = process.argv.slice(2)[0];
+const githubAPIToken = process.env.GITHUB_API_TOKEN;
 const runOnGithubAction =
   githubAPIToken != undefined && githubAPIToken != "" && githubAPIToken != null;
 

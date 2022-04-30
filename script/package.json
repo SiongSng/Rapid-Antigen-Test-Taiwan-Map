@@ -4,14 +4,13 @@
   "version": "1.0.0",
   "license": "GPL-3.0",
   "scripts": {
-    "build": "tsc --build",
-    "clean": "tsc --build --clean",
-    "run": "npm run build && node out/index.js"
+    "start": "ts-node src"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
     "axios": "^0.27.2",
-    "csvtojson": "^2.0.10"
+    "csvtojson": "^2.0.10",
+    "ts-node": "^10.7.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.30",
