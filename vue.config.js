@@ -3,5 +3,6 @@ module.exports = defineConfig({
   transpileDependencies: true,
   configureWebpack: {
     devtool: 'source-map'
-  }
+  },
+  publicPath: '/Rapid-Antigen-Test-Taiwan-Map/'
 })
