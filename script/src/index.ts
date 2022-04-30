@@ -11,7 +11,7 @@ async function start() {
     await _start();
 
     async function _start() {
-        await startFetch();
+       // await startFetch();
         commitToGithub();
         console.log("Finished");
     }
@@ -56,14 +56,16 @@ function commitToGithub() {
     childProcess.execSync(`git clone --single-branch --branch data \"https://x-access-token:$API_TOKEN_GITHUB@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`);
 
     childProcess.execSync(`cp -R data ${cloneDir}`);
-    childProcess.execSync(`cd ${cloneDir}`);
 
-    const needsCommit: boolean = childProcess.execSync(`git status --porcelain`, { encoding: "utf8" }).length > 0;
+    const cdCommand = `cd ${cloneDir} &&`;
+
+    const needsCommit: boolean = childProcess.execSync(`${cdCommand} git status --porcelain`, { encoding: "utf8" }).length > 0;
 
     if (needsCommit) {
-        childProcess.execSync("git add .");
-        childProcess.execSync("git commit --message \"Auto update data\"");
-        childProcess.execSync("git push -u origin HEAD:data");
+        childProcess.execSync(`${cdCommand} git add .`);
+        childProcess.execSync(`${cdCommand} git commit --message \"Auto update data\"`);
+        childProcess.execSync(`${cdCommand} git push -u origin HEAD:data`);
+        console.log("Pushed successfully");
     }
 
     console.log("Committed successfully");
