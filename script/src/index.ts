@@ -26,7 +26,7 @@ async function start() {
 
     // runs every minute
     setInterval((async () => {
-        if (times >= 20) {
+        if (times >= 59) {
             clearInterval();
             exit(0);
         }
@@ -74,7 +74,7 @@ function commitToGithub() {
     }
 
     console.log("Committed successfully");
-    fs.rmdirSync(cloneDir);
+    fs.rmdirSync(cloneDir, { recursive: true });
 }
 
 async function getOldAntigen(): Promise<JsonArrayType | null> {
