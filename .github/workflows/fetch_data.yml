@@ -1,4 +1,4 @@
-name: Fetch data (every 5 minutes)
+name: Fetch data
 
 on:
   workflow_dispatch:

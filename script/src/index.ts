@@ -1,6 +1,6 @@
 import fetchAntigen from "./fetch_antigen";
 import fetchPharmacy from "./fetch_pharmacy";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { JsonArrayType } from "./util";
 import fetchPharmacyUptime from "./fetch_pharmacy_uptime";
 import openStreetMap from "./open_street_map";
