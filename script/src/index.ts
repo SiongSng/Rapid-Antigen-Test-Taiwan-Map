@@ -74,6 +74,7 @@ function commitToGithub() {
     }
 
     console.log("Committed successfully");
+    fs.rmdirSync(cloneDir);
 }
 
 async function getOldAntigen(): Promise<JsonArrayType | null> {
