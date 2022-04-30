@@ -14,7 +14,10 @@ on:
 
 jobs:
   fetch:
+    if: ${{ !contains(github.event.head_commit.message,'[ci skip]') }}
     runs-on: ubuntu-latest
+    env:
+      GITHUB_API_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup node.js
@@ -23,9 +26,10 @@ jobs:
         run: |
           corepack enable
           yarn global add typescript
+          yarn global add ts-node
           cd script
           yarn install
       - name: Run fetch script
         run: |
           cd script
-          yarn run run ${{ secrets.API_TOKEN_GITHUB }}
+          yarn start
