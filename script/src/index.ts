@@ -15,7 +15,7 @@ const runOnGithubAction =
 
 async function start() {
   let interval: NodeJS.Timer;
-  let times = 0;
+  let times = 1;
   await _start();
 
   async function _start() {
@@ -27,10 +27,11 @@ async function start() {
   if (runOnGithubAction) {
     // runs every minute
     interval = setInterval(async () => {
-      if (times++ >= 59) {
+      if (times >= 60) {
         clearInterval(interval);
         exit(0);
       }
+      times++;
 
       await _start();
       console.log("Waiting for next fetch...");
