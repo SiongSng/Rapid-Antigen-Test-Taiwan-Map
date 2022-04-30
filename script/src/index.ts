@@ -14,26 +14,24 @@ const runOnGithubAction =
   githubAPIToken != undefined && githubAPIToken != "" && githubAPIToken != null;
 
 async function start() {
+  let interval: NodeJS.Timer;
   let times = 0;
   await _start();
 
   async function _start() {
     await startFetch();
-    if (runOnGithubAction) {
-      commitToGithub();
-    }
+    if (runOnGithubAction) commitToGithub();
     console.log("Finished");
   }
 
   if (runOnGithubAction) {
     // runs every minute
-    setInterval(async () => {
-      if (times >= 59) {
-        clearInterval();
+    interval = setInterval(async () => {
+      if (times++ >= 59) {
+        clearInterval(interval);
         exit(0);
       }
 
-      times++;
       await _start();
       console.log("Waiting for next fetch...");
     }, 1000 * 60);
