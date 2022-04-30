@@ -53,7 +53,8 @@ function commitToGithub() {
     childProcess.execSync("git config --global user.name \"GitHub Actions Bot\"");
 
     console.log("Cloning repository...");
-    childProcess.execSync(`git clone --single-branch --branch data \"https://x-access-token:$API_TOKEN_GITHUB@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`);
+    const githubAPIToken = process.env["API_TOKEN_GITHUB"];
+    childProcess.execSync(`git clone --single-branch --branch data \"https://x-access-token:${githubAPIToken}@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`);
 
     childProcess.execSync(`ls`, { cwd: cloneDir });
 
