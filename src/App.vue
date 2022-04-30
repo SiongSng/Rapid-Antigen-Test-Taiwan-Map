@@ -11,7 +11,9 @@ import { Options, Vue } from "vue-class-component";
 
 import Leaflet from "leaflet";
 import "leaflet.locatecontrol";
+import "leaflet.markercluster";
 import { Feature, Point } from "geojson";
+import ClusterIcon from "@/leaflet/cluster_icon";
 let openStreetMap: Leaflet.Map;
 
 @Options({
@@ -41,31 +43,59 @@ let openStreetMap: Leaflet.Map;
         }
       });
 
-      /// add map markers
-      this.pharmacies.forEach(
-        (pharmacy: Feature<Point, { [name: string]: string }>) => {
-          Leaflet.marker([
-            pharmacy.geometry.coordinates[1],
-            pharmacy.geometry.coordinates[0],
-          ]).addTo(openStreetMap)
-            .bindPopup(`<p><strong style="font-size: 20px;">${
-            pharmacy.properties.name
-          }</strong></p>
+      const icons = {
+        green: new ClusterIcon("https://i.imgur.com/1KRTaAO.png"),
+        red: new ClusterIcon("https://i.imgur.com/Ed6iMMC.png"),
+        unknown: new ClusterIcon("https://i.imgur.com/mfATTxs.png"),
+        yellow: new ClusterIcon("https://i.imgur.com/raxi9vh.png"),
+      };
+
+      const maker = (
+        pharmacy: Feature<Point, { [name: string]: unknown }>,
+        icon: Leaflet.Icon
+      ): Leaflet.Marker => {
+        const count = pharmacy.properties.count as number;
+
+        return Leaflet.marker(
+          [pharmacy.geometry.coordinates[1], pharmacy.geometry.coordinates[0]],
+          { icon: icon }
+        ).bindPopup(`<p><strong style="font-size: 20px;">${
+          pharmacy.properties.name
+        }</strong></p>
            <strong style="font-size: 16px;">品牌: ${
-             pharmacy.properties.brands[0]
+             pharmacy.properties.brands as Array<unknown>[0]
            }</br>
-          <strong style="font-size: 16px;">剩餘 ${
-            pharmacy.properties.count
-              ? `${pharmacy.properties.count} 份 (每份五個)`
-              : "未取得資料"
-          } 
+          <strong style="font-size: 16px;">剩餘 
+          ${count} 份 (每份五個)
           </strong><br>
           地址: ${pharmacy.properties.address}<br>
           電話: ${pharmacy.properties.phone}<br>
           備註: ${pharmacy.properties.note}<br>
           <small>最後更新時間: ${pharmacy.properties.updated_at}</small>`);
+      };
+
+      const cluster = Leaflet.markerClusterGroup({
+        chunkedLoading: true,
+        disableClusteringAtZoom: 15,
+        spiderfyOnMaxZoom: false,
+      });
+
+      /// add map markers
+      this.pharmacies.forEach(
+        (pharmacy: Feature<Point, { [name: string]: unknown }>) => {
+          const count = pharmacy.properties.count as number;
+
+          if (count == 0) {
+            cluster.addLayer(maker(pharmacy, icons.red));
+          } else if (count <= 30) {
+            cluster.addLayer(maker(pharmacy, icons.yellow));
+          } else {
+            cluster.addLayer(maker(pharmacy, icons.green));
+          }
         }
       );
+
+      openStreetMap.addLayer(cluster);
     },
   },
   mounted() {
@@ -82,7 +112,7 @@ let openStreetMap: Leaflet.Map;
     openStreetMap = Leaflet.map("map", {
       center: [25.042474, 121.513729],
       layers: [title],
-      zoom: zoom
+      zoom: zoom,
     });
     Leaflet.control
       .locate({
