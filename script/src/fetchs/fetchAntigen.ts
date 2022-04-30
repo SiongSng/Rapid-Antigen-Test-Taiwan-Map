@@ -9,7 +9,7 @@ import { parseNote } from "../util";
  */
 export const fetchAntigen = async (
   oldJsonData: antigenFileType = {}
-): Promise<fetchAntigenTypeList | undefined> => {
+): Promise<antigenFileType | undefined> => {
   const { data } = <{ data: string }>await axios({
     url: "https://data.nhi.gov.tw/resource/Nhi_Fst/Fstdata.csv",
   }).catch();
@@ -18,18 +18,7 @@ export const fetchAntigen = async (
 
   const jsonArray: fetchAntigenTypeList = await csv().fromString(data);
   let newJsonData: antigenFileType = {};
-  if (oldJsonData) {
-    Object.keys(oldJsonData).forEach((key) => {});
-    // oldAntigen.forEach((element) => {
-    //   const antigen = jsonArray.find(
-    //     (antigen) => antigen["code"] == element["code"]
-    //   );
-    //   element["count"] = 0;
-    //   if (antigen == null) {
-    //     jsonArray.push(element);
-    //   }
-    // });
-  }
+
   jsonArray.forEach((data) => {
     newJsonData[data["醫事機構代碼"]] = {
       code: data["醫事機構名稱"],
@@ -41,14 +30,20 @@ export const fetchAntigen = async (
       count: parseInt(data["快篩試劑截至目前結餘存貨數量"]),
       phone: data["醫事機構電話"],
       updated_at: data["來源資料時間"],
+      // TODO add open_week
       // open_week: uptime != undefined ? uptime["see_doctor_week"] : null,
       note: parseNote(data["備註"]),
     };
   });
 
-  // // 如果家用快篩販售完畢或藥局暫停販售，政府會把該藥局資料刪除，所以把舊的藥局資料加入進去並將 `count` 設為 0
+  // 如果家用快篩販售完畢或藥局暫停販售，政府會把該藥局資料刪除，所以把舊的藥局資料加入進去並將 `count` 設為 0
+  Object.keys(oldJsonData).forEach((key) => {
+    let antigen = oldJsonData[key];
+    if (newJsonData[key]) return;
+    newJsonData[key] = { ...antigen, count: 0 };
+  });
 
-  // return jsonArray;
+  return newJsonData;
 };
 
 export default fetchAntigen;
