@@ -1,13 +1,11 @@
 import * as fs from "node:fs";
-import { DataJsonType } from "./util";
+import { readJson } from "./util";
 import * as childProcess from "node:child_process";
-import axios from "axios";
 import { exit } from "node:process";
 import fetchPharmacy from "./fetchs/pharmacy";
 import fetchPharmacyUptime from "./fetchs/pharmacyUptime";
 import fetchAntigen from "./fetchs/antigen";
 import openStreetMap from "./map/open_street_map";
-import { antigenFileType } from "../types/axios";
 
 const githubAPIToken = process.env.GITHUB_API_TOKEN;
 const runOnGithubAction =
@@ -47,8 +45,8 @@ async function startFetch() {
   writeJson("pharmacy_uptime", pharmacyUptime);
 
   console.log("Fetching antigen...");
-  if (!pharmacyUptime) return console.log("No pharmacyUptime data");
-  const antigen = await fetchAntigen(await getOldAntigen(), pharmacyUptime);
+  if (!pharmacyUptime == null) return console.log("No pharmacyUptime data");
+  const antigen = await fetchAntigen(await readJson("antigen"), pharmacyUptime);
   writeJson("antigen", antigen);
   console.log("Converting to OpenStreetMap format...");
   if (!antigen) return console.log("No antigen data");
@@ -92,37 +90,13 @@ function commitToGithub() {
   fs.rmSync(cloneDir, { recursive: true });
 }
 
-async function getOldAntigen(): Promise<antigenFileType | null> {
-  if (runOnGithubAction) {
-    try {
-      return await (
-        await axios.get(
-          "https://raw.githubusercontent.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map/data/data/antigen.json"
-        )
-      ).data;
-    } catch (e) {
-      return null;
-    }
-  } else {
-    return readJson("antigen") as antigenFileType;
-  }
-}
-
 function writeJson(filename: string, data: unknown) {
+  if (data == null) return;
   if (!fs.existsSync("data")) {
     fs.mkdirSync("data");
   }
 
   fs.writeFileSync(`data/${filename}.json`, JSON.stringify(data));
-}
-
-function readJson(filename: string): DataJsonType | null {
-  const file = `data/${filename}.json`;
-  if (!fs.existsSync(file)) {
-    return null;
-  } else {
-    return JSON.parse(fs.readFileSync(file, "utf8"));
-  }
 }
 
 start();
