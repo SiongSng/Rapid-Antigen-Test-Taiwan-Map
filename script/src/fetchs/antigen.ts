@@ -17,13 +17,13 @@ export const fetchAntigen = async (
   oldJsonData: antigenFileType | null,
   pharmacyUptime: pharmacyUptimeFileType
 ): Promise<antigenFileType | undefined> => {
-  const response = await axios
+  const { data } = await axios
     .get("https://data.nhi.gov.tw/resource/Nhi_Fst/Fstdata.csv")
     .catch();
 
-  if (!response.data) return;
+  if (!data) return;
 
-  const jsonData: fetchAntigenTypeList = await csv().fromString(response.data);
+  const jsonData: fetchAntigenTypeList = await csv().fromString(data);
   let newJsonData: antigenFileType = {};
 
   jsonData.forEach((data) => {
