@@ -11,7 +11,7 @@ async function start() {
     await _start();
 
     async function _start() {
-        //await startFetch();
+        await startFetch();
         commitToGithub();
         console.log("Finished");
     }
