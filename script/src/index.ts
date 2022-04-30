@@ -55,7 +55,11 @@ function commitToGithub() {
     console.log("Cloning repository...");
     childProcess.execSync(`git clone --single-branch --branch data \"https://x-access-token:$API_TOKEN_GITHUB@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`);
 
+    childProcess.execSync(`ls`, { cwd: cloneDir });
+
     childProcess.execSync(`cp -R data ${cloneDir}`);
+
+    childProcess.execSync("ls", { cwd: cloneDir });
 
     const needsCommit: boolean = childProcess.execSync(`git status --porcelain`, { encoding: "utf8", cwd: cloneDir }).length > 0;
 
