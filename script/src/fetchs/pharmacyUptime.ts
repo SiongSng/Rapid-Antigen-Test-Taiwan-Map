@@ -8,7 +8,7 @@ import { parseNote } from "../util";
  */
 export const fetchPharmacyUptime = async () => {
   const { data } = <{ data: string }>await axios({
-    url: "https://data.nhi.gov.tw/resource/Opendata/全民健康保險特約院所固定服務時段.csv",
+    url: "https://data.nhi.gov.tw/resource/Opendata/%E5%85%A8%E6%B0%91%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%9A%AA%E7%89%B9%E7%B4%84%E9%99%A2%E6%89%80%E5%9B%BA%E5%AE%9A%E6%9C%8D%E5%8B%99%E6%99%82%E6%AE%B5.csv",
   }).catch();
 
   if (!data) return;
