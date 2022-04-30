@@ -1,28 +1,26 @@
 import axios from "axios";
 import csv from "csvtojson";
-import { antigenFileType, fetchAntigenTypeList } from "../../types/axios";
-import { parseNote } from "../util";
+import { antigenFileType, fetchAntigenTypeList, pharmacyUptimeFileType, pharmacyUptimeType, pharmacyUptimeTypeList } from "../../types/axios";
+import { DataJsonType, parseNote } from "../util";
 
 /**
  * 健保特約機構防疫家用快篩剩餘數量明細
  * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=698
  */
 export const fetchAntigen = async (
-  oldJsonData: antigenFileType = {}
+  oldJsonData: antigenFileType | null, pharmacyUptime: pharmacyUptimeFileType
 ): Promise<antigenFileType | undefined> => {
-  const { data } = <{ data: string }>await axios({
-    url: "https://data.nhi.gov.tw/resource/Nhi_Fst/Fstdata.csv",
-  }).catch();
+  const response = await axios.get("https://data.nhi.gov.tw/resource/Nhi_Fst/Fstdata.csv").catch();
 
-  if (!data) return;
-
-  const jsonArray: fetchAntigenTypeList = await csv().fromString(data);
+  const jsonData: fetchAntigenTypeList = await csv().fromString(response.data);
   let newJsonData: antigenFileType = {};
 
-  jsonArray.forEach((data) => {
-    const code: string = data["醫事機構代碼"];
-    newJsonData[code] = {
-      code: parseInt(code),
+  jsonData.forEach((data) => {
+    const code: number = parseInt(data["醫事機構代碼"]);
+    const uptime = pharmacyUptime[code];
+
+    newJsonData[code.toString()] = {
+      code: code,
       name: data["醫事機構名稱"],
       address: data["醫事機構地址"],
       longitude: parseFloat(data["經度"]),
@@ -31,18 +29,20 @@ export const fetchAntigen = async (
       count: parseInt(data["快篩試劑截至目前結餘存貨數量"]),
       phone: data["醫事機構電話"],
       updated_at: data["來源資料時間"],
-      // TODO add open_week
-      // open_week: uptime != undefined ? uptime["see_doctor_week"] : null,
+      open_week: uptime?.see_doctor_week || null,
       note: parseNote(data["備註"]),
     };
   });
 
-  // 如果家用快篩販售完畢或藥局暫停販售，政府會把該藥局資料刪除，所以把舊的藥局資料加入進去並將 `count` 設為 0
-  Object.keys(oldJsonData).forEach((key) => {
-    let antigen = oldJsonData[key];
-    if (newJsonData[key]) return;
-    newJsonData[key] = { ...antigen, count: 0 };
-  });
+  if (oldJsonData != null) {
+    // 如果家用快篩販售完畢或藥局暫停販售，政府會把該藥局資料刪除，所以把舊的藥局資料加入進去並將 `count` 設為 0
+    Object.keys(oldJsonData).forEach((code) => {
+      let antigen = oldJsonData[code];
+
+      if (newJsonData[code]) return; // 當新的資料有該藥局代碼時，則跳過
+      newJsonData[code] = { ...antigen, count: 0 }; // 將舊的資料加入新的資料中 並且用解構的方式設置 count 設為 0
+    });
+  }
 
   return newJsonData;
 };

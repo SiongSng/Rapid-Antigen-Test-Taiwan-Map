@@ -2,19 +2,16 @@ import axios from "axios";
 import { AxiosResponse } from "axios";
 import csv from "csvtojson";
 import { pharmacyFileType, pharmacyTypeList } from "../../types/axios";
-import { JsonArrayType, parseNote } from "../util";
+import { DataJsonType, parseNote } from "../util";
 
 /**
  * 健保特約醫事機構-藥局
  * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=329
  */
-const fetchPharmacy = async (): Promise<JsonArrayType | undefined> => {
-  const { data }: AxiosResponse = await axios({
-    url: "https://data.nhi.gov.tw/DataSets/DataSetResource.ashx?rId=A21030000I-D21005-001",
-  }).catch();
+const fetchPharmacy = async (): Promise<DataJsonType | undefined> => {
+  const response: AxiosResponse = await axios.get("https://data.nhi.gov.tw/DataSets/DataSetResource.ashx?rId=A21030000I-D21005-001").catch();
 
-  if (!data) return;
-  const jsonArray: pharmacyTypeList = await csv().fromString(data);
+  const jsonArray: pharmacyTypeList = await csv().fromString(response.data);
 
   let newData: pharmacyFileType = {};
 
