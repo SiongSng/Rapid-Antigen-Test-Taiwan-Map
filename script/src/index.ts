@@ -5,6 +5,11 @@ import { JsonArrayType } from "./util";
 import fetchPharmacyUptime from "./fetch_pharmacy_uptime";
 import openStreetMap from "./open_street_map";
 import * as childProcess from "node:child_process";
+import axios from "axios";
+import { exit } from "node:process";
+
+const githubAPIToken = process.argv.slice(2)[0];
+const runOnGithubAction = githubAPIToken != undefined && githubAPIToken != "" && githubAPIToken != null;
 
 async function start() {
     let times = 0;
@@ -12,20 +17,23 @@ async function start() {
 
     async function _start() {
         await startFetch();
-        commitToGithub();
+        if (runOnGithubAction) {
+            commitToGithub();
+        }
         console.log("Finished");
+        console.log("Waiting for next fetch...");
     }
 
     // runs every minute
     setInterval((async () => {
-        if (times >= 14) {
+        if (times >= 20) {
             clearInterval();
-            return;
+            exit(0);
         }
 
         times++;
         await _start();
-    }), 1000 * 60 * 60);
+    }), 1000 * 60);
 }
 
 async function startFetch() {
@@ -36,8 +44,7 @@ async function startFetch() {
     writeJson("pharmacy_uptime", pharmacyUptime);
 
     console.log("Fetching antigen...");
-    const oldAntigen = readJson("antigen");
-    const antigen = await fetchAntigen(oldAntigen, pharmacyUptime);
+    const antigen = await fetchAntigen(await getOldAntigen(), pharmacyUptime);
     writeJson("antigen", antigen);
     console.log("Converting to OpenStreetMap format...");
     writeJson("antigen_open_street_map", openStreetMap(antigen));
@@ -46,12 +53,6 @@ async function startFetch() {
 }
 
 function commitToGithub() {
-    const githubAPIToken = process.argv.slice(2)[0];
-
-    if (githubAPIToken == undefined || githubAPIToken == "" || githubAPIToken == null) {
-        return;
-    }
-
     console.log("Committing to github...");
     const cloneDir = ".data-branch-clone";
 
@@ -63,8 +64,6 @@ function commitToGithub() {
 
     childProcess.execSync(`cp -R data ${cloneDir}`);
 
-    console.log(childProcess.execSync(`git status`, { cwd: cloneDir, encoding: "utf8" }));
-
     const needsCommit: boolean = childProcess.execSync(`git status --porcelain`, { encoding: "utf8", cwd: cloneDir }).length > 0;
 
     if (needsCommit) {
@@ -75,6 +74,14 @@ function commitToGithub() {
     }
 
     console.log("Committed successfully");
+}
+
+async function getOldAntigen(): Promise<JsonArrayType | null> {
+    if (runOnGithubAction) {
+        return await (await axios.get("https://raw.githubusercontent.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map/data/data/antigen.json")).data
+    } else {
+        return readJson("antigen");
+    }
 }
 
 function writeJson(filename: string, data: unknown) {
