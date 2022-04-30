@@ -46,10 +46,12 @@ async function startFetch() {
   writeJson("pharmacy_uptime", pharmacyUptime);
 
   console.log("Fetching antigen...");
+  if (!pharmacyUptime) return console.log("No pharmacyUptime data");
   const antigen = await fetchAntigen(await getOldAntigen(), pharmacyUptime);
   writeJson("antigen", antigen);
   console.log("Converting to OpenStreetMap format...");
-  writeJson("antigen_open_street_map", openStreetMap(antigen));
+  if (!antigen) return console.log("No antigen data");
+  writeJson("antigen_open_street_map", openStreetMap(Object.values(antigen)));
 
   console.log("Fetched successfully");
 }
@@ -110,7 +112,7 @@ function writeJson(filename: string, data: unknown) {
     fs.mkdirSync("data");
   }
 
-  fs.writeFileSync(`data/${filename}.json`, JSON.stringify(data, null, 2));
+  fs.writeFileSync(`data/${filename}.json`, JSON.stringify(data));
 }
 
 function readJson(filename: string): DataJsonType | null {
