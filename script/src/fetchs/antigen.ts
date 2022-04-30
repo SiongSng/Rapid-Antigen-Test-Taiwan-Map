@@ -1,6 +1,12 @@
 import axios from "axios";
 import csv from "csvtojson";
-import { antigenFileType, fetchAntigenTypeList, pharmacyUptimeFileType, pharmacyUptimeType, pharmacyUptimeTypeList } from "../../types/axios";
+import {
+  antigenFileType,
+  fetchAntigenTypeList,
+  pharmacyUptimeFileType,
+  pharmacyUptimeType,
+  pharmacyUptimeTypeList,
+} from "../../types/axios";
 import { DataJsonType, parseNote } from "../util";
 
 /**
@@ -8,9 +14,14 @@ import { DataJsonType, parseNote } from "../util";
  * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=698
  */
 export const fetchAntigen = async (
-  oldJsonData: antigenFileType | null, pharmacyUptime: pharmacyUptimeFileType
+  oldJsonData: antigenFileType | null,
+  pharmacyUptime: pharmacyUptimeFileType
 ): Promise<antigenFileType | undefined> => {
-  const response = await axios.get("https://data.nhi.gov.tw/resource/Nhi_Fst/Fstdata.csv").catch();
+  const response = await axios
+    .get("https://data.nhi.gov.tw/resource/Nhi_Fst/Fstdata.csv")
+    .catch();
+
+  if (!response.data) return;
 
   const jsonData: fetchAntigenTypeList = await csv().fromString(response.data);
   let newJsonData: antigenFileType = {};
@@ -34,12 +45,12 @@ export const fetchAntigen = async (
     };
   });
 
-  if (oldJsonData != null) {
+  if (oldJsonData) {
     // 如果家用快篩販售完畢或藥局暫停販售，政府會把該藥局資料刪除，所以把舊的藥局資料加入進去並將 `count` 設為 0
     Object.keys(oldJsonData).forEach((code) => {
-      let antigen = oldJsonData[code];
-
       if (newJsonData[code]) return; // 當新的資料有該藥局代碼時，則跳過
+
+      let antigen = oldJsonData[code];
       newJsonData[code] = { ...antigen, count: 0 }; // 將舊的資料加入新的資料中 並且用解構的方式設置 count 設為 0
     });
   }

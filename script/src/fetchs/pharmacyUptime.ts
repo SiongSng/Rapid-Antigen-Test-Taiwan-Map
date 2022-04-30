@@ -10,10 +10,16 @@ import { parseNote } from "../util";
 /**全民健康保險特約院所固定服務時段
  * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=441&Mid=A111088
  */
-export const fetchPharmacyUptime = async (): Promise<pharmacyUptimeFileType> => {
-  const response = await axios.get("https://data.nhi.gov.tw/resource/Opendata/%E5%85%A8%E6%B0%91%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%9A%AA%E7%89%B9%E7%B4%84%E9%99%A2%E6%89%80%E5%9B%BA%E5%AE%9A%E6%9C%8D%E5%8B%99%E6%99%82%E6%AE%B5.csv")
+export const fetchPharmacyUptime = async (): Promise<
+  pharmacyUptimeFileType | undefined
+> => {
+  const { data } = await axios.get(
+    "https://data.nhi.gov.tw/resource/Opendata/%E5%85%A8%E6%B0%91%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%9A%AA%E7%89%B9%E7%B4%84%E9%99%A2%E6%89%80%E5%9B%BA%E5%AE%9A%E6%9C%8D%E5%8B%99%E6%99%82%E6%AE%B5.csv"
+  );
 
-  const jsonData: pharmacyUptimeTypeList = await csv().fromString(response.data);
+  if (!data) return;
+
+  const jsonData: pharmacyUptimeTypeList = await csv().fromString(data);
   let newData: pharmacyUptimeFileType = {};
 
   jsonData.forEach((element) => {

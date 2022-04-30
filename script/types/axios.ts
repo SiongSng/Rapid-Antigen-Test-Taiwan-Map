@@ -54,6 +54,8 @@ export interface antigenFileType {
     updated_at: string;
     /**備註 */
     note: string | null;
+    /**看診星期 */
+    open_week: pharmacyUptimeFileParseSeeDoctorWeekType;
   };
 }
 

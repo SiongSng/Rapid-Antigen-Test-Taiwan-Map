@@ -9,10 +9,15 @@ import { DataJsonType, parseNote } from "../util";
  * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=329
  */
 const fetchPharmacy = async (): Promise<DataJsonType | undefined> => {
-  const response: AxiosResponse = await axios.get("https://data.nhi.gov.tw/DataSets/DataSetResource.ashx?rId=A21030000I-D21005-001").catch();
+  const { data } = await axios
+    .get(
+      "https://data.nhi.gov.tw/DataSets/DataSetResource.ashx?rId=A21030000I-D21005-001"
+    )
+    .catch();
 
-  const jsonArray: pharmacyTypeList = await csv().fromString(response.data);
+  if (!data) return;
 
+  const jsonArray: pharmacyTypeList = await csv().fromString(data);
   let newData: pharmacyFileType = {};
 
   jsonArray.forEach((data) => {
