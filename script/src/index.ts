@@ -46,7 +46,7 @@ async function startFetch() {
 }
 
 function commitToGithub() {
-    const githubAPIToken = process.argv[0];
+    const githubAPIToken = process.argv.slice(2)[0];
 
     if (githubAPIToken == undefined || githubAPIToken == "" || githubAPIToken == null) {
         return;
