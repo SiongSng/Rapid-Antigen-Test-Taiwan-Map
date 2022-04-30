@@ -12,8 +12,8 @@ const githubAPIToken = process.argv.slice(2)[0];
 const runOnGithubAction = githubAPIToken != undefined && githubAPIToken != "" && githubAPIToken != null;
 
 async function start() {
-    let times = 0;
-    await _start();
+  let times = 0;
+  await _start();
 
     async function _start() {
         await startFetch();
@@ -37,11 +37,11 @@ async function start() {
 }
 
 async function startFetch() {
-    console.log("Fetching pharmacies...");
-    writeJson("pharmacy", await fetchPharmacy());
-    console.log("Fetching pharmacies uptime...");
-    const pharmacyUptime = await fetchPharmacyUptime();
-    writeJson("pharmacy_uptime", pharmacyUptime);
+  console.log("Fetching pharmacies...");
+  writeJson("pharmacy", await fetchPharmacy());
+  console.log("Fetching pharmacies uptime...");
+  const pharmacyUptime = await fetchPharmacyUptime();
+  writeJson("pharmacy_uptime", pharmacyUptime);
 
     console.log("Fetching antigen...");
     const antigen = await fetchAntigen(await getOldAntigen(), pharmacyUptime);
@@ -49,20 +49,22 @@ async function startFetch() {
     console.log("Converting to OpenStreetMap format...");
     writeJson("antigen_open_street_map", openStreetMap(antigen));
 
-    console.log("Fetched successfully");
+  console.log("Fetched successfully");
 }
 
 function commitToGithub() {
     console.log("Committing to github...");
     const cloneDir = ".data-branch-clone";
 
-    childProcess.execSync("git config --global user.email github-actions[bot]@github.com");
-    childProcess.execSync("git config --global user.name \"GitHub Actions Bot\"");
+  childProcess.execSync(
+    "git config --global user.email github-actions[bot]@github.com"
+  );
+  childProcess.execSync('git config --global user.name "GitHub Actions Bot"');
 
     console.log("Cloning repository...");
     childProcess.execSync(`git clone --single-branch --branch data \"https://x-access-token:${githubAPIToken}@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`);
 
-    childProcess.execSync(`cp -R data ${cloneDir}`);
+  childProcess.execSync(`cp -R data ${cloneDir}`);
 
     const needsCommit: boolean = childProcess.execSync(`git status --porcelain`, { encoding: "utf8", cwd: cloneDir }).length > 0;
 
@@ -86,20 +88,20 @@ async function getOldAntigen(): Promise<JsonArrayType | null> {
 }
 
 function writeJson(filename: string, data: unknown) {
-    if (!fs.existsSync("data")) {
-        fs.mkdirSync("data");
-    }
+  if (!fs.existsSync("data")) {
+    fs.mkdirSync("data");
+  }
 
-    fs.writeFileSync(`data/${filename}.json`, JSON.stringify(data, null, 2));
+  fs.writeFileSync(`data/${filename}.json`, JSON.stringify(data, null, 2));
 }
 
 function readJson(filename: string): JsonArrayType | null {
-    const file = `data/${filename}.json`;
-    if (!fs.existsSync(file)) {
-        return null;
-    } else {
-        return JSON.parse(fs.readFileSync(file, "utf8"));
-    }
+  const file = `data/${filename}.json`;
+  if (!fs.existsSync(file)) {
+    return null;
+  } else {
+    return JSON.parse(fs.readFileSync(file, "utf8"));
+  }
 }
 
 start();

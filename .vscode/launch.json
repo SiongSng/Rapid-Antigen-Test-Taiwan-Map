@@ -1,19 +1,15 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "Launch Script",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "cwd": "${workspaceFolder}/script",
-            "preLaunchTask": "tsc: build - script/tsconfig.json",
-            "program": "${workspaceFolder}/script/src/index.ts",
-            "outFiles": [
-                "${workspaceFolder}/**/*.js"
-            ]
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Launch Script",
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}/script",
+      "preLaunchTask": "tsc: build - script/tsconfig.json",
+      "program": "${workspaceFolder}/script/src/index.ts",
+      "outFiles": ["${workspaceFolder}/**/*.js"]
+    }
+  ]
 }
