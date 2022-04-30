@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup
+      - name: Setup node.js
         uses: actions/setup-node@v3
+      - name: Setup
         run: |
           corepack enable
           yarn global add typescript
