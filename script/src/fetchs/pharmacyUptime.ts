@@ -1,6 +1,9 @@
 import axios from "axios";
 import csv from "csvtojson";
-import { pharmacyUptimeFileType } from "../../types/axios";
+import {
+  pharmacyUptimeFileParseSeeDoctorWeekType,
+  pharmacyUptimeFileType,
+} from "../../types/axios";
 import { parseNote } from "../util";
 
 /**全民健康保險特約院所固定服務時段
@@ -39,56 +42,23 @@ export const parseBool = (str: string): boolean => str === "N";
 
 export const parseSeeDoctorWeek = (
   str: string
-): Record<
-  | "monday"
-  | "tuesday"
-  | "wednesday"
-  | "thursday"
-  | "friday"
-  | "saturday"
-  | "sunday",
-  Record<"morning" | "afternoon", boolean>
-> => {
-  Object.fromEntries(
-    [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-      "sunday",
-    ].map((key, index) => [key, { morning: index, afternoon: index + 7 }])
+): pharmacyUptimeFileParseSeeDoctorWeekType =>
+  <pharmacyUptimeFileParseSeeDoctorWeekType>(
+    (<unknown>(
+      Object.fromEntries(
+        [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday",
+        ].map((key, index) => [
+          key,
+          { morning: str[index], afternoon: str[index + 7] },
+        ])
+      )
+    ))
   );
-  return {
-    monday: {
-      morning: parseBool(str.charAt(0)),
-      afternoon: parseBool(str.charAt(7)),
-    },
-    tuesday: {
-      morning: parseBool(str.charAt(1)),
-      afternoon: parseBool(str.charAt(8)),
-    },
-    wednesday: {
-      morning: parseBool(str.charAt(2)),
-      afternoon: parseBool(str.charAt(9)),
-    },
-    thursday: {
-      morning: parseBool(str.charAt(3)),
-      afternoon: parseBool(str.charAt(10)),
-    },
-    friday: {
-      morning: parseBool(str.charAt(4)),
-      afternoon: parseBool(str.charAt(11)),
-    },
-    saturday: {
-      morning: parseBool(str.charAt(5)),
-      afternoon: parseBool(str.charAt(12)),
-    },
-    sunday: {
-      morning: parseBool(str.charAt(6)),
-      afternoon: parseBool(str.charAt(13)),
-    },
-  };
-};
 export default fetchPharmacyUptime;

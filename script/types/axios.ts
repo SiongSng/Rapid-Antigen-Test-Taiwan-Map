@@ -74,14 +74,14 @@ export interface pharmacyUptimeType {
    * - "5" 高屏業務組
    * - "6" 東區業務組
    */
-  業務組別: string;
+  業務組別: "1" | "2" | "3" | "4" | "5" | "6";
   /**特約類別
    * - "1" 醫學中心
    * - "2" 區域醫院
    * - "3" 地區醫院
    * - "4" 基層院所
    */
-  特約類別: string;
+  特約類別: "1" | "2" | "3" | "4";
   /**看診年度 */
   看診年度: string;
   /**看診星期 共計21位元
@@ -104,7 +104,7 @@ export interface pharmacyUptimeType {
    * - "B" 不續約(合約到期)
    * - "C" 醫院自行暫停
    */
-  開業狀況: string;
+  開業狀況: "0" | "2" | "3" | "6" | "7" | "9" | "A" | "B" | "C";
   /**資料集更新時間 */
   資料集更新時間: string;
 }
@@ -130,7 +130,7 @@ export interface pharmacyUptimeFileType {
     /**看診年度 */
     see_doctor_year: number;
     /**看診星期 */
-    see_doctor_week: string;
+    see_doctor_week: pharmacyUptimeFileParseSeeDoctorWeekType;
     /**看診備註 */
     note: string | null;
     /**開業狀況 */
@@ -139,3 +139,14 @@ export interface pharmacyUptimeFileType {
     updated_at: number;
   };
 }
+/**全民健康保險特約院所固定服務時段 看診星期 dict type */
+export type pharmacyUptimeFileParseSeeDoctorWeekType = Record<
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday",
+  Record<"morning" | "afternoon", boolean>
+>;
