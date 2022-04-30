@@ -25,6 +25,7 @@ jobs:
         run: |
           corepack enable
           yarn global add typescript
+          yarn global add ts-node
           cd script
           yarn install
       - name: Run fetch script
