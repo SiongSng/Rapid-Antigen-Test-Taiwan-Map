@@ -3,9 +3,11 @@ name: Fetch data
 on:
   workflow_dispatch:
   schedule:
-    # Runs every 15 minutes
-    - cron: "*/15 * * * *"
+    # Runs every hour
+    - cron: "0 * * * *"
   push:
+    branches:
+      - main
     paths:
       - "script/**"
       - ".github/workflows/fetch_data.yml"
@@ -24,8 +26,6 @@ jobs:
           cd script
           yarn install
       - name: Run fetch script
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         run: |
           cd script
-          yarn run run
+          yarn run run ${{ secrets.API_TOKEN_GITHUB }}
