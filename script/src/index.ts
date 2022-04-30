@@ -53,7 +53,7 @@ function commitToGithub() {
     }
 
     console.log("Committing to github...");
-    const cloneDir = childProcess.execSync("mktemp -d", { encoding: "utf8" });
+    const cloneDir = ".data-branch-clone";
 
     childProcess.execSync("git config --global user.email github-actions[bot]@github.com");
     childProcess.execSync("git config --global user.name \"GitHub Actions Bot\"");
@@ -61,11 +61,9 @@ function commitToGithub() {
     console.log("Cloning repository...");
     childProcess.execSync(`git clone --single-branch --branch data \"https://x-access-token:${githubAPIToken}@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git\" \"${cloneDir}\"`);
 
-    childProcess.execSync(`ls`, { cwd: cloneDir });
-
     childProcess.execSync(`cp -R data ${cloneDir}`);
 
-    childProcess.execSync("ls", { cwd: cloneDir });
+    console.log(childProcess.execSync(`git status`, { cwd: cloneDir, encoding: "utf8" }));
 
     const needsCommit: boolean = childProcess.execSync(`git status --porcelain`, { encoding: "utf8", cwd: cloneDir }).length > 0;
 
