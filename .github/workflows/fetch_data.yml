@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Runs every three hour
-    - cron: "* */3 * * *"
+    - cron: "*/60 */3 * * *"
 
 jobs:
   fetch:
