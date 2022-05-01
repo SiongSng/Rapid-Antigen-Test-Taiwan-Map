@@ -9,12 +9,13 @@
 import { AxiosResponse } from "axios";
 import { Options, Vue } from "vue-class-component";
 
-import Leaflet from "leaflet";
+import L from "leaflet";
 import "leaflet.locatecontrol";
 import "leaflet.markercluster";
 import { Feature, Point } from "geojson";
 import ClusterIcon from "@/leaflet/cluster_icon";
-let openStreetMap: Leaflet.Map;
+import { generateMaker } from "./leaflet/maker";
+let openStreetMap: L.Map;
 
 @Options({
   components: {},
@@ -38,43 +39,19 @@ let openStreetMap: Leaflet.Map;
 
       // clear map markers
       openStreetMap.eachLayer((layer) => {
-        if (layer instanceof Leaflet.Marker) {
+        if (layer instanceof L.Marker) {
           openStreetMap?.removeLayer(layer);
         }
       });
 
       const icons = {
         green: new ClusterIcon("https://i.imgur.com/1KRTaAO.png"),
-        red: new ClusterIcon("https://i.imgur.com/Ed6iMMC.png"),
-        unknown: new ClusterIcon("https://i.imgur.com/mfATTxs.png"),
         yellow: new ClusterIcon("https://i.imgur.com/raxi9vh.png"),
+        red: new ClusterIcon("https://i.imgur.com/Ed6iMMC.png"),
+        none: new ClusterIcon("https://i.imgur.com/mfATTxs.png"),
       };
 
-      const maker = (
-        pharmacy: Feature<Point, { [name: string]: unknown }>,
-        icon: Leaflet.Icon
-      ): Leaflet.Marker => {
-        const count = pharmacy.properties.count as number;
-
-        return Leaflet.marker(
-          [pharmacy.geometry.coordinates[1], pharmacy.geometry.coordinates[0]],
-          { icon: icon }
-        ).bindPopup(`<p><strong style="font-size: 20px;">${
-          pharmacy.properties.name
-        }</strong></p>
-           <strong style="font-size: 16px;">品牌: ${
-             pharmacy.properties.brands as Array<unknown>[0]
-           }</br>
-          <strong style="font-size: 16px;">剩餘 
-          ${count} 份 (每份五個)
-          </strong><br>
-          地址: ${pharmacy.properties.address}<br>
-          電話: ${pharmacy.properties.phone}<br>
-          備註: ${pharmacy.properties.note}<br>
-          <small>最後更新時間: ${pharmacy.properties.updated_at}</small>`);
-      };
-
-      const cluster = Leaflet.markerClusterGroup({
+      const cluster = L.markerClusterGroup({
         chunkedLoading: true,
         disableClusteringAtZoom: 15,
         spiderfyOnMaxZoom: false,
@@ -86,11 +63,13 @@ let openStreetMap: Leaflet.Map;
           const count = pharmacy.properties.count as number;
 
           if (count == 0) {
-            cluster.addLayer(maker(pharmacy, icons.red));
-          } else if (count <= 30) {
-            cluster.addLayer(maker(pharmacy, icons.yellow));
+            cluster.addLayer(generateMaker(pharmacy, icons.none));
+          } else if (count <= 10) {
+            cluster.addLayer(generateMaker(pharmacy, icons.red));
+          } else if (count <= 40) {
+            cluster.addLayer(generateMaker(pharmacy, icons.yellow));
           } else {
-            cluster.addLayer(maker(pharmacy, icons.green));
+            cluster.addLayer(generateMaker(pharmacy, icons.green));
           }
         }
       );
@@ -101,7 +80,7 @@ let openStreetMap: Leaflet.Map;
   mounted() {
     let zoom = 16;
 
-    const title = Leaflet.tileLayer(
+    const title = L.tileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
         attribution:
@@ -109,12 +88,12 @@ let openStreetMap: Leaflet.Map;
       }
     );
 
-    openStreetMap = Leaflet.map("map", {
+    openStreetMap = L.map("map", {
       center: [25.042474, 121.513729],
       layers: [title],
       zoom: zoom,
     });
-    Leaflet.control
+    L.control
       .locate({
         position: "topleft",
         initialZoomLevel: zoom,
