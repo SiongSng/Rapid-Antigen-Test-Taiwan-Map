@@ -14,9 +14,9 @@ import "leaflet.markercluster";
 
 import { Feature, Point } from "geojson";
 import ClusterIcon from "@/leaflet/cluster_icon";
-import { generateMaker } from "./leaflet/maker";
-import { getAntigenData } from "./api/get_antigen_data";
-import { AntigenData } from "./api/api_types";
+import { generateMaker } from "@/leaflet/maker";
+import { getAntigenData } from "@/api/get_antigen_data";
+import { AntigenFeature } from "@/api/api_types";
 
 let openStreetMap: L.Map;
 
@@ -53,10 +53,11 @@ let openStreetMap: L.Map;
         chunkedLoading: true,
         disableClusteringAtZoom: 15,
         spiderfyOnMaxZoom: false,
+        removeOutsideVisibleBounds: true,
       });
 
       /// add map markers
-      const data = this.antigenData as Feature<Point, AntigenData>[];
+      const data = this.antigenData as AntigenFeature[];
       data.forEach((pharmacy) => {
         const count = pharmacy.properties.count;
 

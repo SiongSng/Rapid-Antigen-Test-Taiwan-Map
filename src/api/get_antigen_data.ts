@@ -1,8 +1,7 @@
 import axios from "axios";
-import { AntigenData } from "./api_types";
-import { Feature, Point } from "geojson";
+import { AntigenFeature } from "@/api/api_types";
 
-export const getAntigenData = async (): Promise<Feature<Point, AntigenData>[]> => {
+export const getAntigenData = async (): Promise<AntigenFeature[]> => {
   const antigenAPIUrl =
     "https://raw.githubusercontent.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map/data/data/antigen_open_street_map.json";
   const response = await axios.get(antigenAPIUrl);

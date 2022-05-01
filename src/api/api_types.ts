@@ -1,3 +1,5 @@
+import { Feature, Point } from "geojson";
+
 /**健保特約機構防疫家用快篩剩餘數量明細
  * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=698
  */
@@ -36,3 +38,5 @@ export type PharmacyUptimeSeeDoctorWeek = Record<
   | "sunday",
   Record<"morning" | "afternoon", boolean>
 >;
+
+export type AntigenFeature = Feature<Point, AntigenData>;
