@@ -48,7 +48,14 @@ export const fetchAntigen = async (
         if (newJsonData[code] != null) return; // 當新的資料有該藥局代碼時，則跳過
 
         const antigen = (oldJsonData as AntigenAPIType)[code];
-        newJsonData[code] = { ...antigen, count: 0 }; // 將舊的資料加入新的資料中 並且用解構的方式設置 count 設為 0
+        const uptime = pharmacyUptime[code];
+
+        // 將舊的資料加入新的資料中 並且用解構的方式設置 count 設為 0
+        newJsonData[code] = {
+          ...antigen,
+          count: 0,
+          open_week: uptime?.see_doctor_week,
+        };
       });
     }
 

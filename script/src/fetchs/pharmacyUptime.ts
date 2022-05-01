@@ -1,7 +1,7 @@
 import axios from "axios";
 import csv from "csvtojson";
 import {
-  PharmacyUptimeSeeDoctorWeekAPIType,
+  PharmacyUptimeSeeDoctorWeekAPIType as PharmacyUptimeWeekAPIType,
   PharmacyUptimeAPIType,
 } from "../../types/api_types";
 import { PharmacyUptimeType } from "../../types/raw_types";
@@ -52,25 +52,23 @@ export const fetchPharmacyUptime =
  */
 export const parseBool = (str: string): boolean => str === "N";
 
-export const parseSeeDoctorWeek = (
-  str: string
-): PharmacyUptimeSeeDoctorWeekAPIType =>
-  <PharmacyUptimeSeeDoctorWeekAPIType>(
-    (<unknown>(
-      Object.fromEntries(
-        [
-          "monday",
-          "tuesday",
-          "wednesday",
-          "thursday",
-          "friday",
-          "saturday",
-          "sunday",
-        ].map((key, index) => [
-          key,
-          { morning: str[index], afternoon: str[index + 7] },
-        ])
-      )
-    ))
-  );
+export const parseSeeDoctorWeek = (str: string): PharmacyUptimeWeekAPIType =>
+  <PharmacyUptimeWeekAPIType>(<unknown>Object.fromEntries(
+    [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ].map((key, index) => [
+      key,
+      {
+        morning: parseBool(str[index]),
+        afternoon: parseBool(str[index + 7]),
+        evening: parseBool(str[index + 14]),
+      },
+    ])
+  ));
 export default fetchPharmacyUptime;

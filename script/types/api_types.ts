@@ -96,5 +96,5 @@ export type PharmacyUptimeSeeDoctorWeekAPIType = Record<
   | "friday"
   | "saturday"
   | "sunday",
-  Record<"morning" | "afternoon", boolean>
+  Record<"morning" | "afternoon" | "evening", boolean>
 >;
