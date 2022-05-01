@@ -12,8 +12,8 @@ const runOnGithubAction =
   githubAPIToken != undefined && githubAPIToken != "" && githubAPIToken != null;
 
 async function start() {
-  let interval: NodeJS.Timer;
-  let times = 1;
+  let runTimes = 0;
+  let second = 0;
   await _start();
 
   async function _start() {
@@ -27,16 +27,22 @@ async function start() {
   }
 
   if (runOnGithubAction) {
-    // runs every minute
-    interval = setInterval(() => {
-      if (times >= 55) {
+    setInterval(() => {
+      /// exit the process after three hours
+      if (second >= 1000 * 60 * 60 * 3) {
         console.log("Exiting...");
-        clearInterval(interval);
         exit(0);
       }
-      times++;
+      second++;
+    }, 1000);
 
-      _start().then(() => console.log(`[${times}] Waiting for next fetch...`));
+    // runs every minute
+    setInterval(() => {
+      runTimes++;
+
+      _start().then(() =>
+        console.log(`[${runTimes}] Waiting for next fetch...`)
+      );
     }, 1000 * 60);
   }
 }

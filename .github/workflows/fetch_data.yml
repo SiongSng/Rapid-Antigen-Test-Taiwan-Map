@@ -3,8 +3,8 @@ name: Fetch data
 on:
   workflow_dispatch:
   schedule:
-    # Runs every hour
-    - cron: "0 * * * *"
+    # Runs every three hour
+    - cron: "* */3 * * *"
 
 jobs:
   fetch:
