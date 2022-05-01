@@ -101,11 +101,10 @@ let openStreetMap: L.Map;
 
     getAntigenData().then((data) => {
       this.antigenData = data;
+      /// updates every 2 minutes
       setInterval(async () => {
-        console.log("update");
         this.antigenData = await getAntigenData();
-        console.log("update done");
-      }, 1000 * 60);
+      }, 1000 * 60 * 2);
     });
   },
 })
