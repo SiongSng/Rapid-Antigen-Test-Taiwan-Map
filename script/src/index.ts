@@ -29,13 +29,14 @@ async function start() {
   if (runOnGithubAction) {
     // runs every minute
     interval = setInterval(() => {
-      if (times >= 57) {
+      if (times >= 55) {
+        console.log("Exiting...");
         clearInterval(interval);
         exit(0);
       }
       times++;
 
-      _start().then(() => console.log("Waiting for next fetch..."));
+      _start().then(() => console.log(`[${times}] Waiting for next fetch...`));
     }, 1000 * 60);
   }
 }
@@ -63,7 +64,7 @@ function pushChangesToGithub() {
   const cloneDir = ".data-branch-clone";
 
   childProcess.execSync(
-    "git config --global user.email github-actions[bot]@github.com"
+    "git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com"
   );
   childProcess.execSync('git config --global user.name "GitHub Actions Bot"');
 
