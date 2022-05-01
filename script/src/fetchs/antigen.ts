@@ -1,10 +1,7 @@
 import axios from "axios";
 import csv from "csvtojson";
-import {
-  antigenFileType,
-  fetchAntigenTypeList,
-  pharmacyUptimeFileType,
-} from "../../types/axios";
+import { AntigenAPIType, PharmacyUptimeAPIType } from "../../types/api_types";
+import { AntigenType } from "../../types/raw_types";
 import { DataJsonType, parseNote, readJson } from "../util";
 
 /**
@@ -13,8 +10,8 @@ import { DataJsonType, parseNote, readJson } from "../util";
  */
 export const fetchAntigen = async (
   oldJsonData: DataJsonType | null,
-  pharmacyUptime: pharmacyUptimeFileType | null
-): Promise<antigenFileType | null> => {
+  pharmacyUptime: PharmacyUptimeAPIType | null
+): Promise<AntigenAPIType | null> => {
   if (pharmacyUptime === null) return null;
   try {
     const { data } = await axios
@@ -23,8 +20,8 @@ export const fetchAntigen = async (
 
     if (!data) return null;
 
-    const jsonData: fetchAntigenTypeList = await csv().fromString(data);
-    const newJsonData: antigenFileType = {};
+    const jsonData: AntigenType[] = await csv().fromString(data);
+    const newJsonData: AntigenAPIType = {};
 
     jsonData.forEach((data) => {
       const code: number = parseInt(data["醫事機構代碼"]);
@@ -50,14 +47,14 @@ export const fetchAntigen = async (
       Object.keys(oldJsonData).forEach((code) => {
         if (newJsonData[code] != null) return; // 當新的資料有該藥局代碼時，則跳過
 
-        const antigen = (oldJsonData as antigenFileType)[code];
+        const antigen = (oldJsonData as AntigenAPIType)[code];
         newJsonData[code] = { ...antigen, count: 0 }; // 將舊的資料加入新的資料中 並且用解構的方式設置 count 設為 0
       });
     }
 
     return newJsonData;
   } catch (error) {
-    return (await readJson("antigen")) as antigenFileType | null;
+    return (await readJson("antigen")) as AntigenAPIType | null;
   }
 };
 

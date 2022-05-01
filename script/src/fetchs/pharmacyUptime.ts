@@ -1,17 +1,17 @@
 import axios from "axios";
 import csv from "csvtojson";
 import {
-  pharmacyUptimeFileParseSeeDoctorWeekType,
-  pharmacyUptimeFileType,
-  pharmacyUptimeTypeList,
-} from "../../types/axios";
+  PharmacyUptimeSeeDoctorWeekAPIType,
+  PharmacyUptimeAPIType,
+} from "../../types/api_types";
+import { PharmacyUptimeType } from "../../types/raw_types";
 import { parseNote, readJson } from "../util";
 
 /**全民健康保險特約院所固定服務時段
  * @see https://data.nhi.gov.tw/Datasets/DatasetDetail.aspx?id=441&Mid=A111088
  */
 export const fetchPharmacyUptime =
-  async (): Promise<pharmacyUptimeFileType | null> => {
+  async (): Promise<PharmacyUptimeAPIType | null> => {
     try {
       const { data } = await axios.get(
         "https://data.nhi.gov.tw/resource/Opendata/%E5%85%A8%E6%B0%91%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%9A%AA%E7%89%B9%E7%B4%84%E9%99%A2%E6%89%80%E5%9B%BA%E5%AE%9A%E6%9C%8D%E5%8B%99%E6%99%82%E6%AE%B5.csv"
@@ -19,8 +19,8 @@ export const fetchPharmacyUptime =
 
       if (!data) return null;
 
-      const jsonData: pharmacyUptimeTypeList = await csv().fromString(data);
-      const newData: pharmacyUptimeFileType = {};
+      const jsonData: PharmacyUptimeType[] = await csv().fromString(data);
+      const newData: PharmacyUptimeAPIType = {};
 
       jsonData.forEach((element) => {
         const code = parseInt(element["醫事機構代碼"]);
@@ -42,7 +42,7 @@ export const fetchPharmacyUptime =
     } catch (error) {
       return (await readJson(
         "pharmacy_uptime"
-      )) as pharmacyUptimeFileType | null;
+      )) as PharmacyUptimeAPIType | null;
     }
   };
 
@@ -54,8 +54,8 @@ export const parseBool = (str: string): boolean => str === "N";
 
 export const parseSeeDoctorWeek = (
   str: string
-): pharmacyUptimeFileParseSeeDoctorWeekType =>
-  <pharmacyUptimeFileParseSeeDoctorWeekType>(
+): PharmacyUptimeSeeDoctorWeekAPIType =>
+  <PharmacyUptimeSeeDoctorWeekAPIType>(
     (<unknown>(
       Object.fromEntries(
         [

@@ -1,7 +1,7 @@
 import axios from "axios";
-import { AxiosResponse } from "axios";
 import csv from "csvtojson";
-import { pharmacyFileType, pharmacyTypeList } from "../../types/axios";
+import { PharmacyAPIType } from "../../types/api_types";
+import { PharmacyType } from "../../types/raw_types";
 import { DataJsonType, parseNote, readJson } from "../util";
 
 /**
@@ -18,8 +18,8 @@ const fetchPharmacy = async (): Promise<DataJsonType | null> => {
 
     if (!data) return null;
 
-    const jsonArray: pharmacyTypeList = await csv().fromString(data);
-    const newData: pharmacyFileType = {};
+    const jsonArray: PharmacyType[] = await csv().fromString(data);
+    const newData: PharmacyAPIType = {};
 
     jsonArray.forEach((data) => {
       const code = data["醫事機構代碼"];

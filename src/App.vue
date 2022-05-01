@@ -6,30 +6,28 @@
 </template>
 
 <script lang="ts">
-import { AxiosResponse } from "axios";
 import { Options, Vue } from "vue-class-component";
 
 import L from "leaflet";
 import "leaflet.locatecontrol";
 import "leaflet.markercluster";
+
 import { Feature, Point } from "geojson";
 import ClusterIcon from "@/leaflet/cluster_icon";
 import { generateMaker } from "./leaflet/maker";
+import { getAntigenData } from "./api/get_antigen_data";
+import { AntigenData } from "./api/api_types";
+
 let openStreetMap: L.Map;
 
 @Options({
   components: {},
   data: () => ({
-    data: [],
+    antigenData: [],
     select: {},
   }),
-  computed: {
-    pharmacies(): Feature<Point, { [name: string]: string }>[] {
-      return this.data;
-    },
-  },
   watch: {
-    pharmacies() {
+    antigenData() {
       this.updateMap();
     },
   },
@@ -58,21 +56,20 @@ let openStreetMap: L.Map;
       });
 
       /// add map markers
-      this.pharmacies.forEach(
-        (pharmacy: Feature<Point, { [name: string]: unknown }>) => {
-          const count = pharmacy.properties.count as number;
+      const data = this.antigenData as Feature<Point, AntigenData>[];
+      data.forEach((pharmacy) => {
+        const count = pharmacy.properties.count;
 
-          if (count == 0) {
-            cluster.addLayer(generateMaker(pharmacy, icons.none));
-          } else if (count <= 10) {
-            cluster.addLayer(generateMaker(pharmacy, icons.red));
-          } else if (count <= 40) {
-            cluster.addLayer(generateMaker(pharmacy, icons.yellow));
-          } else {
-            cluster.addLayer(generateMaker(pharmacy, icons.green));
-          }
+        if (count == 0) {
+          cluster.addLayer(generateMaker(pharmacy, icons.none));
+        } else if (count <= 10) {
+          cluster.addLayer(generateMaker(pharmacy, icons.red));
+        } else if (count <= 40) {
+          cluster.addLayer(generateMaker(pharmacy, icons.yellow));
+        } else {
+          cluster.addLayer(generateMaker(pharmacy, icons.green));
         }
-      );
+      });
 
       openStreetMap.addLayer(cluster);
     },
@@ -102,11 +99,13 @@ let openStreetMap: L.Map;
       .addTo(openStreetMap)
       .start();
 
-    const antigenAPIUrl =
-      "https://raw.githubusercontent.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map/data/data/antigen_open_street_map.json";
-    this.$http.get(antigenAPIUrl).then((response: AxiosResponse) => {
-      /// save antigen data
-      this.data = response.data.features;
+    getAntigenData().then((data) => {
+      this.antigenData = data;
+      setInterval(async () => {
+        console.log("update");
+        this.antigenData = await getAntigenData();
+        console.log("update done");
+      }, 1000 * 60);
     });
   },
 })
