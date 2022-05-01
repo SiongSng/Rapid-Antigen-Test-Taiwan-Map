@@ -12,9 +12,8 @@ import L from "leaflet";
 import "leaflet.locatecontrol";
 import "leaflet.markercluster";
 
-import { Feature, Point } from "geojson";
-import ClusterIcon from "@/leaflet/cluster_icon";
-import { generateMaker } from "@/leaflet/maker";
+import MarkerIcon from "@/leaflet/marker_icon";
+import { generateMarker } from "@/leaflet/marker";
 import { getAntigenData } from "@/api/get_antigen_data";
 import { AntigenFeature } from "@/api/api_types";
 
@@ -43,10 +42,10 @@ let openStreetMap: L.Map;
       });
 
       const icons = {
-        green: new ClusterIcon("https://i.imgur.com/1KRTaAO.png"),
-        yellow: new ClusterIcon("https://i.imgur.com/raxi9vh.png"),
-        red: new ClusterIcon("https://i.imgur.com/Ed6iMMC.png"),
-        none: new ClusterIcon("https://i.imgur.com/mfATTxs.png"),
+        green: new MarkerIcon("/assets/green_marker_icon.png"),
+        yellow: new MarkerIcon("/assets/yellow_marker_icon.png"),
+        red: new MarkerIcon("/assets/red_marker_icon.png"),
+        grey: new MarkerIcon("/assets/grey_marker_icon.png"),
       };
 
       const cluster = L.markerClusterGroup({
@@ -62,13 +61,13 @@ let openStreetMap: L.Map;
         const count = pharmacy.properties.count;
 
         if (count == 0) {
-          cluster.addLayer(generateMaker(pharmacy, icons.none));
+          cluster.addLayer(generateMarker(pharmacy, icons.grey));
         } else if (count <= 10) {
-          cluster.addLayer(generateMaker(pharmacy, icons.red));
+          cluster.addLayer(generateMarker(pharmacy, icons.red));
         } else if (count <= 40) {
-          cluster.addLayer(generateMaker(pharmacy, icons.yellow));
+          cluster.addLayer(generateMarker(pharmacy, icons.yellow));
         } else {
-          cluster.addLayer(generateMaker(pharmacy, icons.green));
+          cluster.addLayer(generateMarker(pharmacy, icons.green));
         }
       });
 

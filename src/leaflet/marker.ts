@@ -1,9 +1,10 @@
 import { AntigenFeature } from "@/api/api_types";
+import MakerIcon from "@/leaflet/marker_icon";
 import L from "leaflet";
 
-export const generateMaker = (
+export const generateMarker = (
   pharmacy: AntigenFeature,
-  icon: L.Icon
+  icon: MakerIcon
 ): L.Marker => {
   const count = pharmacy.properties.count;
 
