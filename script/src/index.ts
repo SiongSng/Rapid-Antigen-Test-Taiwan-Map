@@ -6,6 +6,7 @@ import fetchPharmacy from "./fetchs/pharmacy";
 import fetchPharmacyUptime from "./fetchs/pharmacyUptime";
 import fetchAntigen from "./fetchs/antigen";
 import openStreetMap from "./map/open_street_map";
+import { ProcessEnvOptions } from "node:child_process";
 
 const githubAPIToken = process.env.GITHUB_API_TOKEN;
 const runOnGithubAction =
@@ -92,11 +93,18 @@ function pushChangesToGithub(cloned: boolean) {
     }).length > 0;
 
   if (needsCommit) {
-    childProcess.execSync(`git add .`, { cwd: cloneDir });
-    childProcess.execSync(`git commit --message "Auto update data"`, {
+    const option: ProcessEnvOptions = {
       cwd: cloneDir,
-    });
-    childProcess.execSync(`git push -u origin HEAD:data`, { cwd: cloneDir });
+    };
+
+    childProcess.execSync("git checkout --orphan latest_branch", option);
+
+    childProcess.execSync(`git add -A`, option);
+    childProcess.execSync(`git commit --message "Auto update data"`, option);
+    childProcess.execSync("git branch -D data", option);
+    childProcess.execSync("git branch -m data", option);
+
+    childProcess.execSync(`git push -f origin data`, option);
     console.log("Pushed successfully");
   }
 
