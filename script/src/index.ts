@@ -20,7 +20,7 @@ async function start() {
   async function _start() {
     await startFetch();
     try {
-      if (runOnGithubAction) pushChangesToGithub(runTimes > 0);
+      if (runOnGithubAction) pushChangesToGithub(runTimes);
     } catch (error) {
       console.error("Failed to push changes to github.", error);
     }
