@@ -29,7 +29,7 @@ async function start() {
   if (runOnGithubAction) {
     setInterval(() => {
       /// exit the process after three hours
-      if (second >= 1000 * 60 * 60 * 3) {
+      if (second >= 60 * 3) {
         console.log("Exiting...");
         exit(0);
       }
