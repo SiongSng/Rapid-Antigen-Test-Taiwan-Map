@@ -70,9 +70,7 @@ function pushChangesToGithub(cloned: boolean) {
   console.log("Committing to github...");
   const cloneDir = ".data-branch-clone";
 
-  if (cloned) {
-    childProcess.execSync("git pull");
-  } else {
+  if (!cloned) {
     childProcess.execSync(
       "git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com"
     );

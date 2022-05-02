@@ -3,8 +3,8 @@ import csv from "csvtojson";
 import {
   PharmacyUptimeSeeDoctorWeekAPIType as PharmacyUptimeWeekAPIType,
   PharmacyUptimeAPIType,
-} from "../../types/api_types";
-import { PharmacyUptimeType } from "../../types/raw_types";
+} from "../types/api_types";
+import { PharmacyUptimeType } from "../types/raw_types";
 import { parseNote, readJson } from "../util";
 
 /**全民健康保險特約院所固定服務時段

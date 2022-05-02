@@ -1,7 +1,7 @@
 import axios from "axios";
 import csv from "csvtojson";
-import { AntigenAPIType, PharmacyUptimeAPIType } from "../../types/api_types";
-import { AntigenType } from "../../types/raw_types";
+import { AntigenAPIType, PharmacyUptimeAPIType } from "../types/api_types";
+import { AntigenType } from "../types/raw_types";
 import { DataJsonType, parseNote, readJson } from "../util";
 
 /**

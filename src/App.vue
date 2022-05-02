@@ -116,6 +116,7 @@ export default class App extends Vue {}
 
 #map {
   position: relative;
-  height: 98vh;
+  height: 100vh;
+  width: 100%;
 }
 </style>
