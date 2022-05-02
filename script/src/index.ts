@@ -66,26 +66,22 @@ async function startFetch() {
   console.log("Fetched successfully");
 }
 
-function pushChangesToGithub(cloned: boolean) {
+function pushChangesToGithub(times: number) {
   console.log("Committing to github...");
-  const cloneDir = ".data-branch-clone";
+  const cloneDir = `.data-branch-clone_${times}`;
   const option: ProcessEnvOptions = {
     cwd: cloneDir,
   };
 
-  if (cloned) {
-    childProcess.execSync("git branch -D latest_branch", option);
-  } else {
-    childProcess.execSync(
-      "git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com"
-    );
-    childProcess.execSync('git config --global user.name "GitHub Actions Bot"');
+  childProcess.execSync(
+    "git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com"
+  );
+  childProcess.execSync('git config --global user.name "GitHub Actions Bot"');
 
-    console.log("Cloning repository...");
-    childProcess.execSync(
-      `git clone --single-branch --branch data "https://x-access-token:${githubAPIToken}@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git" "${cloneDir}"`
-    );
-  }
+  console.log("Cloning repository...");
+  childProcess.execSync(
+    `git clone --single-branch --branch data "https://x-access-token:${githubAPIToken}@github.com/SiongSng/Rapid-Antigen-Test-Taiwan-Map.git" "${cloneDir}"`
+  );
 
   childProcess.execSync(`cp -R data ${cloneDir}`);
 
@@ -108,6 +104,7 @@ function pushChangesToGithub(cloned: boolean) {
   }
 
   console.log("Committed successfully");
+  fs.rmSync(cloneDir, { recursive: true });
 }
 
 function writeJson(filename: string, data: unknown) {
