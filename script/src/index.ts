@@ -69,8 +69,13 @@ async function startFetch() {
 function pushChangesToGithub(cloned: boolean) {
   console.log("Committing to github...");
   const cloneDir = ".data-branch-clone";
+  const option: ProcessEnvOptions = {
+    cwd: cloneDir,
+  };
 
-  if (!cloned) {
+  if (cloned) {
+    childProcess.execSync("git branch -D latest_branch", option);
+  } else {
     childProcess.execSync(
       "git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com"
     );
@@ -91,10 +96,6 @@ function pushChangesToGithub(cloned: boolean) {
     }).length > 0;
 
   if (needsCommit) {
-    const option: ProcessEnvOptions = {
-      cwd: cloneDir,
-    };
-
     childProcess.execSync("git checkout --orphan latest_branch", option);
 
     childProcess.execSync(`git add -A`, option);
