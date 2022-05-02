@@ -108,7 +108,6 @@ function pushChangesToGithub(cloned: boolean) {
   }
 
   console.log("Committed successfully");
-  fs.rmSync(cloneDir, { recursive: true });
 }
 
 function writeJson(filename: string, data: unknown) {
