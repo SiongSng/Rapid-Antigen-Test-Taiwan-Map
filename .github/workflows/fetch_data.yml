@@ -2,9 +2,9 @@ name: Fetch data
 
 on:
   workflow_dispatch:
-  schedule:
-    # Runs every three hour
-    - cron: "*/60 */3 * * *"
+#   schedule:
+#     # Runs every three hour
+#     - cron: "*/60 */3 * * *"
 
 jobs:
   fetch:
